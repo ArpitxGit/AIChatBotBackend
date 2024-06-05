@@ -13,9 +13,7 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "Create a one-liner historic factoid output based on the input location in JSON format,\
-    An example output to follow one format is,\
-    {'factoid' : 'In 1883, the Brooklyn Bridge, located near 40.70408,-73.99478, was completed and became the first steel-wire suspension bridge in the world.'}",
+    "Create a one-liner historic factoid output based on the input location",
 };
 
 app.post("/api/chat", async (req, res) => {
