@@ -13,7 +13,7 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "Create a one-liner historic factoid output based on the input location in JSON format. Do not mention the location in the output, just the output.",
+    "Create a one-liner historic factoid output based on the input location in JSON format.",
 };
 
 app.post("/api/chat", async (req, res) => {
