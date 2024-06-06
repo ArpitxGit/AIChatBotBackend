@@ -13,7 +13,7 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "Create a one-liner historic factoid output based on the input location",
+    "Create a one-liner intriguing or obscure factoid output based on the input location",
 };
 
 app.post("/api/chat", async (req, res) => {
