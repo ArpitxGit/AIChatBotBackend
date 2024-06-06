@@ -13,7 +13,8 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "Create a one-liner intriguing or obscure factoid output based on the input location",
+    "Create a one-liner intriguing or obscure factoid output based on the input location\
+    Make sure that it's within a quarter mile and do not restate the co-ordinates.",
 };
 
 app.post("/api/chat", async (req, res) => {
@@ -39,6 +40,7 @@ app.post("/api/chat", async (req, res) => {
 
       // Remove any unnecessary escape characters
       content = content.replace(/\\"/g, '"');
+      console.log("[FACTOID] : ", content);
 
       res.status(200).json({ factoid: content });
     } else {
