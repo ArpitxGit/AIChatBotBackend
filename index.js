@@ -14,7 +14,7 @@ const systemMessage = {
   role: "system",
   content:
     "Create a one-liner intriguing or obscure factoid output based on the input location\
-    Make sure that it's within a quarter mile and do not restate the co-ordinates.",
+    Make sure that it's within one eighth of a mile and do not restate the location.",
 };
 
 app.post("/api/chat", async (req, res) => {
