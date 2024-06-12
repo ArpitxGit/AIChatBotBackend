@@ -13,8 +13,11 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "Create a one-liner intriguing or obscure factoid output based on the input location\
-    Make sure that it's within one eighth of a mile and do not restate the location.",
+    "You are a narrative designer and your task is to create intriguing anf obscure content.\
+    Create a one-liner factoid and a description based on the input location and only one of the tags\
+    Make sure that the factoid is intriguing or obscure it's within one eighth of a mile and do not restate the location.\
+    Make sure the description is next part of the story\
+    Make sure the output is in json format {'factoid' : '<FACTOID>' , 'description' : '<DESCRIPTION>'}",
 };
 
 app.post("/api/chat", async (req, res) => {
@@ -24,6 +27,7 @@ app.post("/api/chat", async (req, res) => {
 
     const requestData = {
       model: "gpt-4o",
+      response_format: { type: "json_object" },
       messages: [systemMessage, ...apiMessages],
     };
 
@@ -32,17 +36,13 @@ app.post("/api/chat", async (req, res) => {
 
     if (response && response.choices && response.choices.length > 0) {
       let content = response.choices[0].message.content.trim();
-
-      // Remove any surrounding quotes
-      if (content.startsWith('"') && content.endsWith('"')) {
-        content = content.slice(1, -1);
-      }
-
-      // Remove any unnecessary escape characters
-      content = content.replace(/\\"/g, '"');
-      console.log("[FACTOID] : ", content);
-
-      res.status(200).json({ factoid: content });
+      const jsonResponse = JSON.parse(content);
+      let Fact = jsonResponse.factoid;
+      let Desc = jsonResponse.description;
+      console.log(content);
+      console.log("[FACTOID] : ", Fact);
+      console.log("[DESCRIPTION] : ", Desc);
+      res.status(200).json({ factoid: Fact, description: Desc });
     } else {
       throw new Error("No valid response from OpenAI.");
     }
