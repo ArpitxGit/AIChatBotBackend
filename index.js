@@ -3,12 +3,6 @@ const env = require("dotenv");
 const { promisify } = require("util");
 const { default: OpenAI } = require("openai");
 const axios = require("axios");
-// const { NFTStorage, File } = require("nft.storage");
-// const FormData = require("form-data");
-// const { fromBuffer } = require("file-type");
-
-// const { ethers } = require("ethers");
-// const Near8RolePlaying = require("./abi.json");
 
 env.config();
 
@@ -17,69 +11,6 @@ const port = process.env.PORT || 3000;
 
 // Define routes
 app.use(express.json());
-
-// // Image generation function
-// const generateImage = async (text) => {
-//   try {
-//     const form = new FormData();
-//     form.append("prompt", text);
-
-//     const response = await axios.post(
-//       "https://clipdrop-api.co/text-to-image/v1",
-//       form,
-//       {
-//         headers: {
-//           "x-api-key": process.env.IMAGE_API_KEY,
-//           ...form.getHeaders(),
-//         },
-//         responseType: "arraybuffer", // To get binary image data
-//       }
-//     );
-//     return response.data;
-//   } catch (error) {
-//     console.log("generateImage error", error);
-//     throw new Error("Image generation failed");
-//   }
-// };
-
-// // IPFS upload function
-// const storeImageNFT = async (imageBuffer, name, description) => {
-//   try {
-//     const fileType = await fromBuffer(imageBuffer);
-//     const image = new File([imageBuffer], "temp.jpg", { type: fileType?.mime });
-
-//     console.log("File", image);
-
-//     const nftstorage = new NFTStorage({ token: process.env.NFT_STORAGE_KEY });
-//     const result = await nftstorage.store({
-//       image,
-//       name,
-//       description,
-//     });
-//     console.log(result);
-//     return { metadataUrl: result.url, metadataContent: result.data };
-//   } catch (error) {
-//     throw new Error(error);
-//   }
-// };
-
-// // Set up provider
-// const provider = new ethers.providers.JsonRpcProvider("YOUR_RPC_PROVIDER_URL");
-
-// // Set up signer
-// const privateKey = "YOUR_PRIVATE_KEY"; // Replace with your private key
-// const wallet = new ethers.Wallet(privateKey, provider);
-
-// // Connect to the contract
-// const contractAddress = "CONTRACT_ADDRESS"; // Replace with your contract address
-// const contract = new ethers.Contract(
-//   contractAddress,
-//   Near8RolePlaying.abi,
-//   wallet
-// );
-
-// // mint on-chain
-// const mintOnChain = async () => {};
 
 const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
@@ -109,6 +40,7 @@ async function createAndMonitorRun(threadId, assistantId, imageDescription) {
       // Handle "completed" status
       if (run.status === "completed") {
         console.log("Run", run.id, "completed");
+        console.log("Run Usage", run.id, run.usage);
       }
 
       // Handle "requires_action" status
@@ -209,10 +141,42 @@ async function retrieveAssistantMessages(threadId) {
   console.log("Retrieving messages for thread:", threadId);
   try {
     const assistantMessages = await openai.beta.threads.messages.list(threadId);
+
+    // Filter out messages where the role is "assistant"
     const assistantMessagesFiltered = assistantMessages.body.data.filter(
       (message) => message.role === "assistant"
     );
-    return assistantMessagesFiltered;
+
+    if (assistantMessagesFiltered.length > 0) {
+      const assistantMessageContent = assistantMessagesFiltered[0].content;
+
+      let latestAssistantValue;
+      if (typeof assistantMessageContent === "string") {
+        latestAssistantValue = JSON.parse(
+          assistantMessageContent.replace(/```json|```/g, "")
+        );
+      } else {
+        latestAssistantValue = assistantMessageContent;
+      }
+
+      // Since latestAssistantValue is a list, we need to access the first element
+      if (
+        Array.isArray(latestAssistantValue) &&
+        latestAssistantValue.length > 0
+      ) {
+        const parsedValue = JSON.parse(latestAssistantValue[0].text.value);
+
+        console.log(`Name : ${parsedValue.op1}`);
+        console.log(`Description : ${parsedValue.op2 + parsedValue.op3}`);
+        console.log(`ImageDescription : ${parsedValue.op0}`);
+
+        return parsedValue;
+      } else {
+        return "No assistant message content response available";
+      }
+    } else {
+      return "No assistant response available";
+    }
   } catch (error) {
     console.error(`Failed to retrieve messages: ${error}`);
     throw error; // Rethrow to handle it in the caller
@@ -250,79 +214,39 @@ async function processThread(req, res, next) {
       imageUrl,
     });
 
-    const assistantMessages = await retrieveAssistantMessages(thread.id);
-    const latestAssistantValue = parseLatestAssistantMessage(assistantMessages);
+    const parsedValue = await retrieveAssistantMessages(thread.id);
+    // const latestAssistantValue = parseLatestAssistantMessage(assistantMessages);
 
-    const formattedResponse = formatResponse(
-      thread.id,
-      req.body.message,
-      latestAssistantValue,
-      run,
-      generatedImageDescription, // Include the description in the response
-      imageUrl
-    );
+    // Fetch run usage details
+    const runUsage = await getTokenUsageByRun(thread.id, run.id);
+    const formattedResponse = {
+      threadId: thread.id,
+      userMessage: req.body.message,
+      run: run.id,
+      name: parsedValue.op1,
+      description:
+        parsedValue.op2 || parsedValue.op3
+          ? [parsedValue.op2, parsedValue.op3].join("")
+          : undefined,
+      generatedImageDescriptionForPosts: generatedImageDescription, // Include the description in the response
+      imageUrl: imageUrl,
+      RunUsage: runUsage, // Add run usage to the response
+    };
+
+    modifiedResponse = {
+      ...modifiedResponse,
+      op1: parsedValue.op1,
+      op2: parsedValue.op2 + parsedValue.op3,
+      op0: parsedValue.op0,
+    };
 
     console.log("Response sent successfully.");
     res.json(formattedResponse);
   } catch (error) {
-    console.log("processTrhead error", error);
+    console.log("processThread error", error);
     next(error); // Pass errors to the error handler
     return;
   }
-}
-
-function formatResponse(
-  threadId,
-  userInput,
-  latestAssistantValue,
-  run,
-  imageDescription,
-  imageUrl // Add imageUrl parameter
-) {
-  console.log(`Formatting response for user input: ${userInput}`);
-  if (latestAssistantValue) {
-    console.log(`Assistant name: ${latestAssistantValue.op1}`);
-    console.log(
-      `Assistant description: ${
-        latestAssistantValue.op2 + latestAssistantValue.op3
-      }`
-    );
-    console.log(`Image description: ${latestAssistantValue.op0}`);
-  }
-
-  const assistantResponse = {
-    op0: imageUrl,
-    op1: latestAssistantValue?.op1,
-    op2: (latestAssistantValue?.op2 || "") + (latestAssistantValue?.op3 || ""),
-  };
-
-  return {
-    threadId,
-    userInput,
-    runStatus: run.status,
-    runId: run.id,
-    assistantResponse: latestAssistantValue
-      ? assistantResponse
-      : "No assistant response available",
-    imageDescriptionForPosts: imageDescription,
-  };
-}
-
-function parseLatestAssistantMessage(messages) {
-  if (
-    messages.length > 0 &&
-    messages[0].content &&
-    messages[0].content[0].text
-  ) {
-    try {
-      return JSON.parse(
-        messages[0].content[0].text.value.replace(/```json|```/g, "")
-      );
-    } catch (error) {
-      console.error("Error parsing message content:", error);
-    }
-  }
-  return null;
 }
 
 async function createNewThread() {
@@ -338,7 +262,7 @@ function getAssistantId(assistant) {
 }
 
 const describeSystemPrompt = `
-    You are a system generating detailed descriptions of the main subject of an image, a character for a role-playing game. Provide a detailed description of a the game character, focusing on key visual traits essential for consistent image generation. Describe the detailed character for an image generator to recreate consistency of the main subject, including characteristics (e.g., human/non-human, gender, age), style (e.g., Real-Time, Realistic, Cartoon, Anime, Manga, Surreal). Required characteristics include race, gender, and hairstyle. Always include unique facial features in the description. For example, an image subject might have a particular complexion, or a particularly shaped nose, or piercing eyes, or big eyes, or a mole on the face. The resulting description should be concise, limited to 550 characters, exclude any background details, and avoid the use of Markdown or special characters. This format ensures compatibility with JSON API endpoints.
+Provide a detailed description of a role-playing game character, focusing on key visual traits essential for consistent image generation. Required characteristics include race, gender, and hairstyle. Additionally, include unique facial features in the description. For example, an image subject might have a pointy nose, piercing eyes, big eyes, or a mole on the face. The resulting description should be concise, limited to 550 characters, exclude any background details, and avoid the use of Markdown or special characters. This format ensures compatibility with JSON API endpoints.
 `;
 
 async function describeImage(imgUrl, title, imagegen_ledger) {
@@ -426,6 +350,47 @@ async function generateImageConsistent(
   }
 }
 
+async function getTokenUsageByRun(threadId, runId) {
+  try {
+    const run = await openai.beta.threads.runs.retrieve(threadId, runId);
+    if (run && run.usage) {
+      console.log("Token usage for run:", run.usage);
+      return run.usage;
+    } else {
+      console.log("No usage data available for this run.");
+      return null;
+    }
+  } catch (error) {
+    console.error("Failed to retrieve run usage:", error);
+    throw error;
+  }
+}
+
+async function getTotalTokenUsage(threadId) {
+  try {
+    const runs = await openai.beta.threads.runs.list(threadId);
+    let totalUsage = {
+      prompt_tokens: 0,
+      completion_tokens: 0,
+      total_tokens: 0,
+    };
+
+    runs.forEach((run) => {
+      if (run.usage) {
+        totalUsage.prompt_tokens += run.usage.prompt_tokens;
+        totalUsage.completion_tokens += run.usage.completion_tokens;
+        totalUsage.total_tokens += run.usage.total_tokens;
+      }
+    });
+
+    console.log("Total token usage for all runs in the thread:", totalUsage);
+    return totalUsage;
+  } catch (error) {
+    console.error("Failed to retrieve total token usage:", error);
+    throw error;
+  }
+}
+
 // Middleware to catch JSON parsing errors
 app.use((err, req, res, next) => {
   if (err instanceof SyntaxError && err.status === 400 && "body" in err) {
@@ -463,9 +428,9 @@ app.delete("/api/run", async (req, res, next) => {
       return;
     }
 
-    const cancelResponse = await openai.beta.threads.runs.cancel(thread.id, {
+    const cancelResponse = await openai.beta.threads.runs.cancel(threadId, {
       role: "user",
-      content: message,
+      // content: message,
     });
     console.log(cancelResponse);
 
