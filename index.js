@@ -79,8 +79,8 @@ const systemMessage = {
   role: "system",
   content:
     "Create a one-liner intriguing or obscure factoid output nearby the input location\
-    State the factoid's location.\
-    Make sure the output is in json format {'factoid' : '<FACTOID>' , 'coordinates' : '<Co-ordinates>'}",
+    State the factoid's location in decimal degrees format.\
+    Make sure the output is in JSON format {'factoid' : '<FACTOID>' , 'coordinates' : '<Co-ordinates>'}",
 };
 
 app.post("/api/chat", async (req, res) => {
