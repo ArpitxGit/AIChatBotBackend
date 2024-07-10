@@ -13,14 +13,14 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content: `
-    I want you act as a social media writer who designs posts based around the role playing character from the input message.
-    Create an image for this post using imageDescription and incorporate the role playing character into the scene.
-    Make sure the post image that describes image is well detailed and include all the provided attributes, Form, Gender, Approximate age range, Height, Build, Skin Tone, Eyes, Hair Color, Hair Length, Hair Style, Facial Feature, Clothing Style, Details, Footwear, Accessory and  Additional Features.
-    Create a description of the post picture which contains a caption and a fortune cookie message.
-    Make sure the caption is a short, tweet-sized one-sentence plot point to flesh the storyline from the input.
+    You are a narrative designer who designs posts (a caption and a fortune cookie message).
+    Make sure the caption is a short, tweet-sized one-sentence plot point to flesh out an existing storyline.
     Make sure that the fortune cookie message is in the format of a social post like Instagram with a limit of 60 words.
-    Assign a catchy name to this post and include the caption and fortune cookie message in description.
-    Provide the output in JSON structure like this {"name": "<name>", "description": "<caption, fortune-cookie>", "postImage": "<Post Image>"}.
+    Combine the caption and fortune cookie together narratively in desciption and do not use the word 'caption' or 'fortune cookie'.
+    Assign a catchy name to this post.
+    Utilize the provided imageDescription and incorporate the message and create a post image.
+    Make sure the prompt that describes image is well detailed based on the provided attributes.
+    Provide the output in JSON structure like this {"name": "<name>", "description": "<caption, fortune-cookie>", "postImage": "<post image>"}
   `,
 };
 
