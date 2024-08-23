@@ -78,10 +78,18 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "Create a one-liner intriguing or obscure factoid output nearby the input location\
-    State the factoid's location in decimal degrees format.\
-    Make sure the output is in JSON format {'factoid' : '<FACTOID>' , 'coordinates' : '<Co-ordinates>'}",
+    "Create a one-liner intriguing or obscure factoid output nearby the input location also state the citation of the factoid\
+   State the factoid's location in decimal degrees format.\
+   Make sure the output is in JSON format {'factoid' : '<FACTOID + CITATION>' , 'coordinates' : '<Co-ordinates>'}",
 };
+
+// const systemMessage = {
+//   role: "system",
+//   content:
+//     "Create a one-liner intriguing or obscure factoid output nearby the input location\
+//     State the factoid's location in decimal degrees format.\
+//     Make sure the output is in JSON format {'factoid' : '<FACTOID>' , 'coordinates' : '<Co-ordinates>'}",
+// };
 
 app.post("/api/chat", async (req, res) => {
   try {
