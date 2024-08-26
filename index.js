@@ -79,8 +79,10 @@ const systemMessage = {
   role: "system",
   content:
     "Create a one-liner intriguing or obscure factoid output nearby the input location also state the citation of the factoid\
+    Make sure the citation is from free content online sources\
+    Give a second related factoid\
    State the factoid's location in decimal degrees format.\
-   Make sure the output is in JSON format {'factoid' : '<FACTOID + CITATION>' , 'coordinates' : '<Co-ordinates>'}",
+   Make sure the output is in JSON format {'factoid' : '<FACTOID + CITATION + SECOND-FACTOID>' , 'coordinates' : '<Co-ordinates>'}",
 };
 
 // const systemMessage = {
