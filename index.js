@@ -10,17 +10,30 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+// const systemMessage = {
+//   role: "system",
+//   content: `
+//     You are a narrative designer who designs posts (a caption and a fortune cookie message).
+//     Make sure the caption is a short, tweet-sized one-sentence plot point to flesh out an existing storyline.
+//     Make sure that the fortune cookie message is in the format of a social post like Instagram with a limit of 60 words.
+//     Combine the caption and fortune cookie together narratively in desciption and do not use the word 'caption' or 'fortune cookie'.
+//     Assign a catchy name to this post.
+//     Utilize the provided imageDescription and incorporate the message and create a post image.
+//     Make sure the prompt that describes image is well detailed based on the provided attributes.
+//     Provide the output in JSON structure like this {"name": "<name>", "description": "<caption, fortune-cookie>", "postImage": "<post image>"}
+//   `,
+// };
+
 const systemMessage = {
   role: "system",
   content: `
-    You are a narrative designer who designs posts (a caption and a fortune cookie message).
-    Make sure the caption is a short, tweet-sized one-sentence plot point to flesh out an existing storyline.
-    Make sure that the fortune cookie message is in the format of a social post like Instagram with a limit of 60 words.
-    Combine the caption and fortune cookie together narratively in desciption and do not use the word 'caption' or 'fortune cookie'.
-    Assign a catchy name to this post.
-    Utilize the provided imageDescription and incorporate the message and create a post image.
+    I want you act as a social media writer who designs posts based around the role playing character from the input message.
+    Create a postImage using imageDescription and incorporate the role playing character into the scene.
     Make sure the prompt that describes image is well detailed based on the provided attributes.
-    Provide the output in JSON structure like this {"name": "<name>", "description": "<caption, fortune-cookie>", "postImage": "<post image>"}
+    Create a description of the post picture which contains a caption.
+    Make sure the caption is a short, tweet-sized one-sentence plot point to flesh the storyline from the input.
+    Assign a catchy name to this post and include the caption in description.
+    Provide the output in JSON structure like this {"name": "<name>", "description": "<caption>", "postImage": "<prompt>"}.
   `,
 };
 
