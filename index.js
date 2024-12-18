@@ -91,9 +91,9 @@ const systemMessage = {
     "Create a one-liner intriguing or obscure factoid output nearby the input location and also state the citation of the factoid\
     Make sure the citation is from free content online sources\
     State the factoid's location in decimal degrees format.\
-    Secondly, propose a fictional and/or fantasy storyline that draws inspiration from the factoid\
+    Secondly, propose a fictional and/or fantasy storyline that draws inspiration from the factoid in 40 words.\
     Make sure that the storyline proposal is a short setup that can later be expanded into a longer narrative\
-    Make sure the output is in JSON format {'factoid' : '<FACTOID + CITATION + Storyline proposal>' , 'coordinates' : '<Co-ordinates>'}",
+    Make sure the output is in JSON format {'factoid' : '<FACTOID + CITATION>' , 'storyline' : '<Storyline proposal>' , 'coordinates' : '<Co-ordinates>'}",
 };
 
 app.post("/api/chat", async (req, res) => {
@@ -114,11 +114,15 @@ app.post("/api/chat", async (req, res) => {
       let content = response.choices[0].message.content.trim();
       const jsonResponse = JSON.parse(content);
       let Fact = jsonResponse.factoid;
+      let Story = jsonResponse.storyline;
       let Coord = jsonResponse.coordinates;
       console.log(content);
       console.log("[FACTOID] : ", Fact);
+      console.log("[STORYLINE] : ", Story);
       console.log("[COORDINATE] : ", Coord);
-      res.status(200).json({ factoid: Fact, coordinates: Coord });
+      res
+        .status(200)
+        .json({ factoid: Fact, storyline: Story, coordinates: Coord });
     } else {
       throw new Error("No valid response from OpenAI.");
     }
