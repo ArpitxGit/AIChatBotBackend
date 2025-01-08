@@ -85,15 +85,26 @@ const openai = new OpenAI({
 //    Make sure the output is in JSON format {'factoid' : '<FACTOID + CITATION + SECOND-FACTOID>' , 'coordinates' : '<Co-ordinates>'}",
 // };
 
+// const systemMessage = {
+//   role: "system",
+//   content:
+//     "Create a one-liner intriguing or obscure factoid output nearby the input location and also state the citation of the factoid\
+//     Make sure the citation is from free content online sources\
+//     State the factoid's location in decimal degrees format.\
+//     Secondly, propose a fictional and/or fantasy storyline that draws inspiration from the factoid in 40 words.\
+//     Make sure that the storyline proposal is a short setup that can later be expanded into a longer narrative\
+//     Make sure the output is in JSON format {'factoid' : '<FACTOID + CITATION>' , 'storyline' : '<Storyline proposal>' , 'coordinates' : '<Co-ordinates>'}",
+// };
+
 const systemMessage = {
   role: "system",
   content:
-    "Create a one-liner intriguing or obscure factoid output nearby the input location and also state the citation of the factoid\
-    Make sure the citation is from free content online sources\
-    State the factoid's location in decimal degrees format.\
-    Secondly, propose a fictional and/or fantasy storyline that draws inspiration from the factoid in 40 words.\
-    Make sure that the storyline proposal is a short setup that can later be expanded into a longer narrative\
-    Make sure the output is in JSON format {'factoid' : '<FACTOID + CITATION>' , 'storyline' : '<Storyline proposal>' , 'coordinates' : '<Co-ordinates>'}",
+    "You are creating trivia questions for a trivia app. Each question should have the following structure: \
+1. Interesting question relevant to the specified topic or region except where the coordinate lies or find out the region\
+2. Four multiple-choice options, labeled A through D, with only one correct answer.\
+3. The correct answer explicitly labeled.\
+Provide the questions and answers in the following JSON format:\
+{'question': 'Question text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A')}",
 };
 
 app.post("/api/chat", async (req, res) => {
@@ -113,16 +124,36 @@ app.post("/api/chat", async (req, res) => {
     if (response && response.choices && response.choices.length > 0) {
       let content = response.choices[0].message.content.trim();
       const jsonResponse = JSON.parse(content);
-      let Fact = jsonResponse.factoid;
-      let Story = jsonResponse.storyline;
-      let Coord = jsonResponse.coordinates;
+      // let Fact = jsonResponse.factoid;
+      // let Story = jsonResponse.storyline;
+      // let Coord = jsonResponse.coordinates;
+      let Quest = jsonResponse.question;
+      let OptionA = jsonResponse.optionA;
+      let OptionB = jsonResponse.optionB;
+      let OptionC = jsonResponse.optionC;
+      let OptionD = jsonResponse.optionD;
+      let Answer = jsonResponse.answer;
       console.log(content);
-      console.log("[FACTOID] : ", Fact);
-      console.log("[STORYLINE] : ", Story);
-      console.log("[COORDINATE] : ", Coord);
+      // console.log("[FACTOID] : ", Fact);
+      // console.log("[STORYLINE] : ", Story);
+      // console.log("[COORDINATE] : ", Coord);
+      console.log("[QUESTION] : ", Quest);
+      console.log("[OPTION A] : ", OptionA);
+      console.log("[OPTION B] : ", OptionB);
+      console.log("[OPTION C] : ", OptionC);
+      console.log("[OPTION D] : ", OptionD);
+      console.log("[ANSWER] : ", Answer);
       res
         .status(200)
-        .json({ factoid: Fact, storyline: Story, coordinates: Coord });
+        // .json({ factoid: Fact, storyline: Story, coordinates: Coord });
+        .json({
+          question: Quest,
+          optionA: OptionA,
+          optionB: OptionB,
+          optionC: OptionC,
+          optionD: OptionD,
+          answer: Answer,
+        });
     } else {
       throw new Error("No valid response from OpenAI.");
     }
