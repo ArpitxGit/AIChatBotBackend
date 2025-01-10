@@ -100,11 +100,12 @@ const systemMessage = {
   role: "system",
   content:
     "You are creating trivia questions for a trivia app. Each question should have the following structure: \
-1. Interesting question relevant to the specified topic or region except where the coordinate lies or find out the region\
+1. Interesting question relevant to one of the provided topics and related to the region provided\
 2. Four multiple-choice options, labeled A through D, with only one correct answer.\
 3. The correct answer explicitly labeled.\
+4. Which provided topic the question is relevant to.\
 Provide the questions and answers in the following JSON format:\
-{'question': 'Question text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A')}",
+{'question': 'Question text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A'), 'topic':'Topic'}",
 };
 
 app.post("/api/chat", async (req, res) => {
@@ -133,6 +134,7 @@ app.post("/api/chat", async (req, res) => {
       let OptionC = jsonResponse.optionC;
       let OptionD = jsonResponse.optionD;
       let Answer = jsonResponse.answer;
+      let Topic = jsonResponse.topic;
       console.log(content);
       // console.log("[FACTOID] : ", Fact);
       // console.log("[STORYLINE] : ", Story);
@@ -143,6 +145,7 @@ app.post("/api/chat", async (req, res) => {
       console.log("[OPTION C] : ", OptionC);
       console.log("[OPTION D] : ", OptionD);
       console.log("[ANSWER] : ", Answer);
+      console.log("[TOPIC] : ", Topic);
       res
         .status(200)
         // .json({ factoid: Fact, storyline: Story, coordinates: Coord });
@@ -153,6 +156,7 @@ app.post("/api/chat", async (req, res) => {
           optionC: OptionC,
           optionD: OptionD,
           answer: Answer,
+          topic: Topic,
         });
     } else {
       throw new Error("No valid response from OpenAI.");
