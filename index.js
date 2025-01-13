@@ -99,13 +99,14 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "You are creating trivia questions for a trivia app. Each question should have the following structure: \
-1. Interesting question relevant to one of the provided topics and related to the region provided\
-2. Four multiple-choice options, labeled A through D, with only one correct answer.\
-3. The correct answer explicitly labeled.\
-4. Which provided topic the question is relevant to.\
-Provide the questions and answers in the following JSON format:\
-{'question': 'Question text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A'), 'topic':'Topic'}",
+    "Create a trivia question according to the following structure: \
+  1. Question relevant to one of the provided topics and related to the region of the location provided\
+  2. Four multiple-choice options, labeled A through D, with only one correct answer.\
+  3. The correct answer explicitly labeled.\
+  4. Which provided topic the question is relevant to.\
+  5. A citation link for the information the trivia is based on.\
+  Provide the questions and answers in the following JSON format:\
+  {'question': 'Question text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A'), 'topic':'Topic', 'citationLink':'link'}",
 };
 
 app.post("/api/chat", async (req, res) => {
@@ -135,6 +136,7 @@ app.post("/api/chat", async (req, res) => {
       let OptionD = jsonResponse.optionD;
       let Answer = jsonResponse.answer;
       let Topic = jsonResponse.topic;
+      let Link = jsonResponse.citationLink;
       console.log(content);
       // console.log("[FACTOID] : ", Fact);
       // console.log("[STORYLINE] : ", Story);
@@ -146,6 +148,8 @@ app.post("/api/chat", async (req, res) => {
       console.log("[OPTION D] : ", OptionD);
       console.log("[ANSWER] : ", Answer);
       console.log("[TOPIC] : ", Topic);
+      console.log("[Link] : ", Link);
+
       res
         .status(200)
         // .json({ factoid: Fact, storyline: Story, coordinates: Coord });
@@ -157,6 +161,7 @@ app.post("/api/chat", async (req, res) => {
           optionD: OptionD,
           answer: Answer,
           topic: Topic,
+          citationLink: Link,
         });
     } else {
       throw new Error("No valid response from OpenAI.");
