@@ -99,12 +99,12 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "Create a trivia question according to the following structure: \
-  1. Question relevant to one of the provided topics and related to the region of the location provided\
+    "Create a trivia question according to the following structure:\
+  1. Question relevant to one of the provided topics and related to the region of the location provided. Double-check that the question is factually accurate and verifiable.\
   2. Four multiple-choice options, labeled A through D, with only one correct answer.\
   3. The correct answer explicitly labeled.\
   4. Which provided topic the question is relevant to.\
-  5. A citation link for the information the trivia is based on.\
+  5. A citation URL for where the information for the question was retrieved from and where it can be verified.\
   Provide the questions and answers in the following JSON format:\
   {'question': 'Question text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A'), 'topic':'Topic', 'citationLink':'link'}",
 };
