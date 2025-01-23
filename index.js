@@ -96,17 +96,30 @@ const openai = new OpenAI({
 //     Make sure the output is in JSON format {'factoid' : '<FACTOID + CITATION>' , 'storyline' : '<Storyline proposal>' , 'coordinates' : '<Co-ordinates>'}",
 // };
 
+// const systemMessage = {
+//   role: "system",
+//   content:
+//     "Create a trivia question according to the following structure:\
+//   1. Question relevant to one of the provided topics and related to the region of the location provided. Double-check that the question is factually accurate and verifiable.\
+//   2. Four multiple-choice options, labeled A through D, with only one correct answer.\
+//   3. The correct answer explicitly labeled.\
+//   4. Which provided topic the question is relevant to.\
+//   5. A citation URL for where the information for the question was retrieved from and where it can be verified.\
+//   Provide the questions and answers in the following JSON format:\
+//   {'question': 'Question text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A'), 'topic':'Topic', 'citationLink':'link'}",
+// };
+
 const systemMessage = {
   role: "system",
   content:
-    "Create a trivia question according to the following structure:\
-  1. Question relevant to one of the provided topics and related to the region of the location provided. Double-check that the question is factually accurate and verifiable.\
-  2. Four multiple-choice options, labeled A through D, with only one correct answer.\
-  3. The correct answer explicitly labeled.\
-  4. Which provided topic the question is relevant to.\
-  5. A citation URL for where the information for the question was retrieved from and where it can be verified.\
-  Provide the questions and answers in the following JSON format:\
-  {'question': 'Question text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A'), 'topic':'Topic', 'citationLink':'link'}",
+    "Find a wikipedia entry about one or more of the provided topics, related to the region of the location provided. Return the following:\
+  1. A citation URL to the wikipedia entry.\
+  2. A trivia question about the topic(s) and information found in the wikipedia entry, made for someone in the region provided who has knowledge about the area.\
+  3. Four multiple-choice options, labeled A through D, with only one correct answer.\
+  4. The correct answer explicitly labeled.\
+  5. What provided topic(s) the question is relevant to.\
+  Provide the link, question, and answers in the following JSON format:\
+  {'citationLink':'link', 'question': 'Question text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A'), 'topic':'Topic'}",
 };
 
 app.post("/api/chat", async (req, res) => {
@@ -154,6 +167,7 @@ app.post("/api/chat", async (req, res) => {
         .status(200)
         // .json({ factoid: Fact, storyline: Story, coordinates: Coord });
         .json({
+          citationLink: Link,
           question: Quest,
           optionA: OptionA,
           optionB: OptionB,
@@ -161,7 +175,6 @@ app.post("/api/chat", async (req, res) => {
           optionD: OptionD,
           answer: Answer,
           topic: Topic,
-          citationLink: Link,
         });
     } else {
       throw new Error("No valid response from OpenAI.");
