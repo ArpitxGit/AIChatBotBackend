@@ -13,15 +13,15 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "Find a wikipedia entry about one or more of the provided topics. Return the following:\
+    "Find a wikipedia entry about one or more of the provided topics, related to the region of the location provided. Return the following:\
 1. A citation URL to the wikipedia entry.\
-2. A series of 5 trivia questions based on the topic(s) and information found in the wikipedia entry, made for someone in the region provided who has knowledge about the area.\
+2. A series of 5 different trivia questions based on 5 different topics and information found in the wikipedia entry.\
 Each trivia question should be returned in the following format:\
 1. Trivia question\
 2. Four multiple-choice options, labeled A through D, with only one correct answer.\
 3. The correct answer explicitly labeled.\
-4. What provided topic(s) the question is relevant to.\
-Provide the link and 5 questions in the following JSON format, Where i ranges from 2 to 5\
+4. The topics that the question is relevant to.\
+Provide the link and 5 questions in the following JSON format, Where i ranges from 2 to 5 and make sure for a total of 5 questions\
 {'citationLink':'link', 'question': 'Question one text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A'), 'topic':'Topic', 'questioni': 'Question i text here', 'optionAi':'Option A', 'optionBi': 'Option B', 'optionCi': 'Option C', 'optionDi': 'Option D' ,'answeri': 'Correct option (e.g., 'A'), 'topici':'Topic', for example., question2, optionA2, answer2, topic2}",
 };
 
