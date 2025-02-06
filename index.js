@@ -15,14 +15,16 @@ const systemMessage = {
   content:
     "Find a wikipedia entry about one or more of the provided topics, related to the region of the location provided. Return the following:\
 1. A citation URL to the wikipedia entry.\
-2. A series of 5 different trivia questions based on 5 different topics and information found in the wikipedia entry.\
+2. A series of 5 different trivia questions of varying difficulty based on 5 different topics and information found in the wikipedia entry.\
 Each trivia question should be returned in the following format:\
 1. Trivia question\
 2. Four multiple-choice options, labeled A through D, with only one correct answer.\
 3. The correct answer explicitly labeled.\
 4. The topics that the question is relevant to.\
-Provide the link and 5 questions in the following JSON format, Where i ranges from 2 to 5 and make sure for a total of 5 questions\
-{'citationLink':'link', 'question': 'Question one text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A'), 'topic':'Topic', 'questioni': 'Question i text here', 'optionAi':'Option A', 'optionBi': 'Option B', 'optionCi': 'Option C', 'optionDi': 'Option D' ,'answeri': 'Correct option (e.g., 'A'), 'topici':'Topic', for example., question2, optionA2, answer2, topic2}",
+5. The difficulty level of the question (easy, medium, or hard).\
+Provide the link and 5 questions in the following JSON format\
+{'citationLink':'link', 'question': 'Question one text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A')', 'topic':'Topic', 'difficulty':'Level (e.g., 'Hard)', 'questioni': 'Question i text here', 'optionAi':'Option A', 'optionBi': 'Option B', 'optionCi': 'Option C', 'optionDi': 'Option D' ,'answeri': 'Correct option (e.g., 'A')', 'topici':'Topic', 'difficultyi':'Level (e.g., 'Hard)', Where i ranges from 2 to 5, for example., question2, optionA2, answer2, topic2, difficulty2}\
+Make sure for a total of 5 questions answers topic and difficulty",
 };
 
 app.post("/api/chat", async (req, res) => {
@@ -50,6 +52,7 @@ app.post("/api/chat", async (req, res) => {
       let OptionD = jsonResponse.optionD;
       let Answer = jsonResponse.answer;
       let Topic = jsonResponse.topic;
+      let Difficulty = jsonResponse.difficulty;
       let Link = jsonResponse.citationLink;
       let Question2 = jsonResponse.question2;
       let OptionA2 = jsonResponse.optionA2;
@@ -58,6 +61,7 @@ app.post("/api/chat", async (req, res) => {
       let OptionD2 = jsonResponse.optionD2;
       let Answer2 = jsonResponse.answer2;
       let Topic2 = jsonResponse.topic2;
+      let Difficulty2 = jsonResponse.difficulty2;
       let Question3 = jsonResponse.question3;
       let OptionA3 = jsonResponse.optionA3;
       let OptionB3 = jsonResponse.optionB3;
@@ -65,6 +69,7 @@ app.post("/api/chat", async (req, res) => {
       let OptionD3 = jsonResponse.optionD3;
       let Answer3 = jsonResponse.answer3;
       let Topic3 = jsonResponse.topic3;
+      let Difficulty3 = jsonResponse.difficulty3;
       let Question4 = jsonResponse.question4;
       let OptionA4 = jsonResponse.optionA4;
       let OptionB4 = jsonResponse.optionB4;
@@ -72,6 +77,7 @@ app.post("/api/chat", async (req, res) => {
       let OptionD4 = jsonResponse.optionD4;
       let Answer4 = jsonResponse.answer4;
       let Topic4 = jsonResponse.topic4;
+      let Difficulty4 = jsonResponse.difficulty4;
       let Question5 = jsonResponse.question5;
       let OptionA5 = jsonResponse.optionA5;
       let OptionB5 = jsonResponse.optionB5;
@@ -79,6 +85,7 @@ app.post("/api/chat", async (req, res) => {
       let OptionD5 = jsonResponse.optionD5;
       let Answer5 = jsonResponse.answer5;
       let Topic5 = jsonResponse.topic5;
+      let Difficulty5 = jsonResponse.difficulty5;
 
       console.log("[JSON] : ", jsonResponse);
 
@@ -94,6 +101,7 @@ app.post("/api/chat", async (req, res) => {
           optionD: OptionD,
           answer: Answer,
           topic: Topic,
+          difficulty: Difficulty,
           question2: Question2,
           optionA2: OptionA2,
           optionB2: OptionB2,
@@ -101,6 +109,7 @@ app.post("/api/chat", async (req, res) => {
           optionD2: OptionD2,
           answer2: Answer2,
           topic2: Topic2,
+          difficulty2: Difficulty2,
           question3: Question3,
           optionA3: OptionA3,
           optionB3: OptionB3,
@@ -108,6 +117,7 @@ app.post("/api/chat", async (req, res) => {
           optionD3: OptionD3,
           answer3: Answer3,
           topic3: Topic3,
+          difficulty3: Difficulty3,
           question4: Question4,
           optionA4: OptionA4,
           optionB4: OptionB4,
@@ -115,6 +125,7 @@ app.post("/api/chat", async (req, res) => {
           optionD4: OptionD4,
           answer4: Answer4,
           topic4: Topic4,
+          difficulty4: Difficulty4,
           question5: Question5,
           optionA5: OptionA5,
           optionB5: OptionB5,
@@ -122,6 +133,7 @@ app.post("/api/chat", async (req, res) => {
           optionD5: OptionD5,
           answer5: Answer5,
           topic5: Topic5,
+          difficulty5: Difficulty5,
         });
     } else {
       throw new Error("No valid response from OpenAI.");
