@@ -33,7 +33,7 @@ app.post("/api/chat", async (req, res) => {
     const apiMessages = [{ role: "user", content: userMessage }];
 
     const requestData = {
-      model: "gpt-4o",
+      model: "o3-mini",
       response_format: { type: "json_object" },
       messages: [systemMessage, ...apiMessages],
     };
