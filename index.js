@@ -36,6 +36,7 @@ app.post("/api/chat", async (req, res) => {
       model: "o3-mini",
       response_format: { type: "json_object" },
       messages: [systemMessage, ...apiMessages],
+      reasoning_effort: "low",
     };
 
     const response = await openai.chat.completions.create(requestData);
