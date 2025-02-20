@@ -23,7 +23,7 @@ Each trivia question should be returned in the following format:\
 4. The topics that the question is relevant to.\
 5. The difficulty level of the question (easy, medium, or hard).\
 Provide the link and 5 questions in the following JSON format\
-{'citationLink':'link', 'question': 'Question one text here', 'optionA':'Option A', 'optionB': 'Option B', 'optionC': 'Option C', 'optionD': 'Option D' ,'answer': 'Correct option (e.g., 'A')', 'topic':'Topic', 'difficulty':'Level (e.g., 'Hard)', 'questioni': 'Question i text here', 'optionAi':'Option A', 'optionBi': 'Option B', 'optionCi': 'Option C', 'optionDi': 'Option D' ,'answeri': 'Correct option (e.g., 'A')', 'topici':'Topic', 'difficultyi':'Level (e.g., 'Hard)', Where i ranges from 2 to 5, for example., question2, optionA2, answer2, topic2, difficulty2}\
+{'citationLink':'link', 'questioni': 'Question i text here', 'optionAi':'Option A', 'optionBi': 'Option B', 'optionCi': 'Option C', 'optionDi': 'Option D' ,'answeri': 'Correct option (e.g., 'A')', 'topici':'Topic', 'difficultyi':'Level (e.g., 'Hard)', Where i ranges from 1 to 5, for example., question2, optionA2, answer2, topic2, difficulty2}\
 Make sure for a total of 5 questions answers topic and difficulty",
 };
 
@@ -46,95 +46,53 @@ app.post("/api/chat", async (req, res) => {
       let content = response.choices[0].message.content.trim();
       const jsonResponse = JSON.parse(content);
 
-      let Question = jsonResponse.question;
-      let OptionA = jsonResponse.optionA;
-      let OptionB = jsonResponse.optionB;
-      let OptionC = jsonResponse.optionC;
-      let OptionD = jsonResponse.optionD;
-      let Answer = jsonResponse.answer;
-      let Topic = jsonResponse.topic;
-      let Difficulty = jsonResponse.difficulty;
-      let Link = jsonResponse.citationLink;
-      let Question2 = jsonResponse.question2;
-      let OptionA2 = jsonResponse.optionA2;
-      let OptionB2 = jsonResponse.optionB2;
-      let OptionC2 = jsonResponse.optionC2;
-      let OptionD2 = jsonResponse.optionD2;
-      let Answer2 = jsonResponse.answer2;
-      let Topic2 = jsonResponse.topic2;
-      let Difficulty2 = jsonResponse.difficulty2;
-      let Question3 = jsonResponse.question3;
-      let OptionA3 = jsonResponse.optionA3;
-      let OptionB3 = jsonResponse.optionB3;
-      let OptionC3 = jsonResponse.optionC3;
-      let OptionD3 = jsonResponse.optionD3;
-      let Answer3 = jsonResponse.answer3;
-      let Topic3 = jsonResponse.topic3;
-      let Difficulty3 = jsonResponse.difficulty3;
-      let Question4 = jsonResponse.question4;
-      let OptionA4 = jsonResponse.optionA4;
-      let OptionB4 = jsonResponse.optionB4;
-      let OptionC4 = jsonResponse.optionC4;
-      let OptionD4 = jsonResponse.optionD4;
-      let Answer4 = jsonResponse.answer4;
-      let Topic4 = jsonResponse.topic4;
-      let Difficulty4 = jsonResponse.difficulty4;
-      let Question5 = jsonResponse.question5;
-      let OptionA5 = jsonResponse.optionA5;
-      let OptionB5 = jsonResponse.optionB5;
-      let OptionC5 = jsonResponse.optionC5;
-      let OptionD5 = jsonResponse.optionD5;
-      let Answer5 = jsonResponse.answer5;
-      let Topic5 = jsonResponse.topic5;
-      let Difficulty5 = jsonResponse.difficulty5;
-
       console.log("[JSON] : ", jsonResponse);
 
       res
         .status(200)
         // .json({ factoid: Fact, storyline: Story, coordinates: Coord });
         .json({
-          citationLink: Link,
-          question: Question,
-          optionA: OptionA,
-          optionB: OptionB,
-          optionC: OptionC,
-          optionD: OptionD,
-          answer: Answer,
-          topic: Topic,
-          difficulty: Difficulty,
-          question2: Question2,
-          optionA2: OptionA2,
-          optionB2: OptionB2,
-          optionC2: OptionC2,
-          optionD2: OptionD2,
-          answer2: Answer2,
-          topic2: Topic2,
-          difficulty2: Difficulty2,
-          question3: Question3,
-          optionA3: OptionA3,
-          optionB3: OptionB3,
-          optionC3: OptionC3,
-          optionD3: OptionD3,
-          answer3: Answer3,
-          topic3: Topic3,
-          difficulty3: Difficulty3,
-          question4: Question4,
-          optionA4: OptionA4,
-          optionB4: OptionB4,
-          optionC4: OptionC4,
-          optionD4: OptionD4,
-          answer4: Answer4,
-          topic4: Topic4,
-          difficulty4: Difficulty4,
-          question5: Question5,
-          optionA5: OptionA5,
-          optionB5: OptionB5,
-          optionC5: OptionC5,
-          optionD5: OptionD5,
-          answer5: Answer5,
-          topic5: Topic5,
-          difficulty5: Difficulty5,
+          citationLink: jsonResponse.citationLink,
+          question1: jsonResponse.question1,
+          optionA1: jsonResponse.optionA1,
+          optionB1: jsonResponse.optionB1,
+          optionC1: jsonResponse.optionC1,
+          optionD1: jsonResponse.optionD1,
+          answer1: jsonResponse.answer1,
+          topic1: jsonResponse.topic1,
+          difficulty1: jsonResponse.difficulty,
+          question2: jsonResponse.question2,
+          optionA2: jsonResponse.optionA2,
+          optionB2: jsonResponse.optionB2,
+          optionC2: jsonResponse.optionC2,
+          optionD2: jsonResponse.optionD2,
+          answer2: jsonResponse.answer2,
+          topic2: jsonResponse.topic2,
+          difficulty2: jsonResponse.difficulty2,
+          question3: jsonResponse.question3,
+          optionA3: jsonResponse.optionA3,
+          optionB3: jsonResponse.optionB3,
+          optionC3: jsonResponse.optionC3,
+          optionD3: jsonResponse.optionD3,
+          answer3: jsonResponse.answer3,
+          topic3: jsonResponse.topic3,
+          difficulty3: jsonResponse.difficulty3,
+          question4: jsonResponse.question4,
+          optionA4: jsonResponse.optionA4,
+          optionB4: jsonResponse.optionB4,
+          optionC4: jsonResponse.optionC4,
+          optionD4: jsonResponse.optionD4,
+          answer4: jsonResponse.answer4,
+          topic4: jsonResponse.yopic4,
+          difficulty4: jsonResponse.difficulty4,
+          question5: jsonResponse.question5,
+          optionA5: jsonResponse.optionA5,
+          optionB5: jsonResponse.optionB5,
+          optionC5: jsonResponse.optionC5,
+          optionD5: jsonResponse.optionD5,
+          answer5: jsonResponse.answer5,
+          topic5: jsonResponse.topic5,
+          difficulty5: jsonResponse.difficulty5,
         });
     } else {
       throw new Error("No valid response from OpenAI.");
