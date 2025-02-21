@@ -17,7 +17,7 @@ const systemMessage = {
 1. A citation URL to the wikipedia entry.\
 2. A series of 5 different trivia questions of varying difficulty based on 5 different topics and information found in the wikipedia entry.\
 Each trivia question should be returned in the following format:\
-1. Trivia question\
+1. Trivia question(worded without referencing the entry itself)\
 2. Four multiple-choice options, labeled A through D, with only one correct answer.\
 3. The correct answer explicitly labeled.\
 4. The topics that the question is relevant to.\
