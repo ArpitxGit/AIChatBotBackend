@@ -13,18 +13,19 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "Find a wikipedia entry about one or more of the provided topics, related to the region of the location provided. Return the following:\
-1. A citation URL to the wikipedia entry.\
-2. A series of 5 different trivia questions of varying difficulty based on 5 different topics and information found in the wikipedia entry.\
-Each trivia question should be returned in the following format:\
-1. Trivia question(worded without referencing the entry itself)\
-2. Four multiple-choice options, labeled A through D, with only one correct answer.\
-3. The correct answer explicitly labeled.\
-4. The topics that the question is relevant to.\
-5. The difficulty level of the question (easy, medium, or hard).\
-Provide the link and 5 questions in the following JSON format\
-{'citationLink':'link', 'questioni': 'Question i text here', 'optionAi':'Option A', 'optionBi': 'Option B', 'optionCi': 'Option C', 'optionDi': 'Option D' ,'answeri': 'Correct option (e.g., 'A')', 'topici':'Topic', 'difficultyi':'Level (e.g., 'Hard)', Where i ranges from 1 to 5, for example., question2, optionA2, answer2, topic2, difficulty2}\
-Make sure for a total of 5 questions answers topic and difficulty",
+    "Find 3 wikipedia entries about one or more of the provided topics.\
+    Then randomly choose one of the entries to make trivia from. Return the following:\
+    1. A citation URL to the wikipedia entry.\
+    2. A series of 5 different trivia questions of varying difficulty based on 5 different topics and information found in the wikipedia entry.\
+    Each trivia question should be returned in the following format:\
+    1. Trivia question(worded without referencing the entry itself)\
+    2. Four multiple-choice options, labeled A through D, with only one correct answer.\
+    3. The correct answer explicitly labeled.\
+    4. The topics that the question is relevant to.\
+    5. The difficulty level of the question (easy, medium, or hard).\
+    Make sure that the declared topic the question is relevant to does not give away the answer.\
+    Provide the link and 5 questions in the following JSON format {'citationLink':'link', 'questioni': 'Question i text here', 'optionAi':'Option A', 'optionBi': 'Option B', 'optionCi': 'Option C', 'optionDi': 'Option D' ,'answeri': 'Correct option (e.g., 'A')', 'topici':'Topic', 'difficultyi':'Level (e.g., 'Hard)', Where i ranges from 1 to 5, for example., question2, optionA2, answer2, topic2, difficulty2}\
+    Make sure for a total of 5 questions answers topic and difficulty",
 };
 
 app.post("/api/chat", async (req, res) => {
