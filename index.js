@@ -13,19 +13,17 @@ const openai = new OpenAI({
 const systemMessage = {
   role: "system",
   content:
-    "Find 3 wikipedia entries about one or more of the provided topics.\
-    Then randomly choose one of the entries to make trivia from. Return the following:\
-    1. A citation URL to the wikipedia entry.\
-    2. A series of 5 different trivia questions of varying difficulty based on 5 different topics and information found in the wikipedia entry.\
-    Each trivia question should be returned in the following format:\
-    1. Trivia question(worded without referencing the entry itself)\
-    2. Four multiple-choice options, labeled A through D, with only one correct answer.\
-    3. The correct answer explicitly labeled.\
-    4. The topics that the question is relevant to.\
-    5. The difficulty level of the question (easy, medium, or hard).\
-    Make sure that the declared topic the question is relevant to does not give away the answer.\
-    Provide the link and 5 questions in the following JSON format {'citationLink':'link', 'questioni': 'Question i text here', 'optionAi':'Option A', 'optionBi': 'Option B', 'optionCi': 'Option C', 'optionDi': 'Option D' ,'answeri': 'Correct option (e.g., 'A')', 'topici':'Topic', 'difficultyi':'Level (e.g., 'Hard)', Where i ranges from 1 to 5, for example., question2, optionA2, answer2, topic2, difficulty2}\
-    Make sure for a total of 5 questions answers topic and difficulty",
+    "Find 3 wikipedia entries about one of the provided topics. Then make trivia from the information found in the entries. Return the following:\
+  1. A citation URL to a wikipedia entry.\
+  2. A series of 5 different trivia questions of varying difficulty\
+  Each trivia question should be returned in the following format:\
+  1. Trivia question\
+  2. Four multiple-choice options, labeled A through D, with only one correct answer.\
+  3. The correct answer explicitly labeled.\
+  4. The topic that the question is relevant to.\
+  Provide the link and 5 questions in the following JSON format\
+  {'citationLink':'link', 'question1': 'Question one text here', 'optionA1':'Option A', 'optionB1': 'Option B', 'optionC1': 'Option C', 'optionD1': 'Option D' ,'answer1': 'Correct option (e.g., 'A')', 'topic1':'Topic', 'question2': 'Question 2 text here', 'optionA2':'Option A', 'optionB2': 'Option B', 'optionC2': 'Option C', 'optionD2': 'Option D' ,'answer2': 'Correct option (e.g., 'A')', 'topic2':'Topic', 'question3': 'Question 3 text here', 'optionA3':'Option A', 'optionB3': 'Option B', 'optionC3': 'Option C', 'optionD3': 'Option D' ,'answer3': 'Correct option (e.g., 'A')', 'topic3':'Topic', 'question4': 'Question 4 text here', 'optionA4':'Option A', 'optionB4': 'Option B', 'optionC4': 'Option C', 'optionD4': 'Option D' ,'answer4': 'Correct option (e.g., 'A')', 'topic4':'Topic', 'question5': 'Question 5 text here', 'optionA5':'Option A', 'optionB5': 'Option B', 'optionC5': 'Option C', 'optionD5': 'Option D' ,'answer5': 'Correct option (e.g., 'A')', 'topic5':'Topic'}\
+  Make sure of a total of 5 questions with answers and topic",
 };
 
 app.post("/api/chat", async (req, res) => {
