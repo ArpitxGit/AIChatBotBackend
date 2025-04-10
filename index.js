@@ -16,8 +16,8 @@ const systemMessage = {
     "Find 3 wikipedia entries about one of the provided topics. Then make trivia from the information found in the entries. Return the following:\
   1. A citation URL to a wikipedia entry.\
   2. A series of 5 different trivia questions of varying difficulty\
-  Do not use the words `Wikipedia`, `article`, or `entry` in the questions:\
-  Each trivia question should be returned in the following format\
+  Do not use the words `Wikipedia`, `article`, or `entry` in the questions\
+  Each trivia question should be returned in the following format:\
   1. Trivia question\
   2. Four multiple-choice options, labeled A through D, with only one correct answer.\
   3. The correct answer explicitly labeled.\
